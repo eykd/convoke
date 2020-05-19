@@ -4,6 +4,7 @@ import sys
 
 from path import Path
 
+import pendulum as pn
 from configobj import ConfigObj
 
 from ._version import get_versions
@@ -155,6 +156,17 @@ class Settings:
             config = ConfigObj(default_path)
 
         return config
+
+    def get_timezone(self):
+        return self.get("timezone", pn.local_timezone().name)
+
+    def now(self, timezone=None):
+        if timezone is None:
+            timezone = self.get_timezone()
+        return pn.now(tz=timezone)
+
+    def utcnow(self):
+        return self.now(timezone="UTC")
 
 
 def get_settings(app_name, settings_class=Settings, **kwargs):

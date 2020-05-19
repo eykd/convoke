@@ -26,6 +26,7 @@ setup(
     install_requires=[
         "configobj",
         "path",
+        "pendulum",
     ],
     version=versioneer.get_version(),
     python_requires='>=3.6',

@@ -1,6 +1,7 @@
 import pathlib
 from unittest.mock import patch
 
+import pendulum as pn
 import pytest
 from path import Path
 
@@ -94,3 +95,27 @@ def test_it_should_return_a_value_as_float(env, cfg):
     env["FOO"] = "5.0"
     result = cfg.as_float("foo")
     assert result == 5.0
+
+
+def test_get_timezone_should_return_it(env, cfg):
+    expected = "America/Los_Angeles"
+    with patch("pendulum.local_timezone") as patched:
+        patched.return_value.name = expected
+        result = cfg.get_timezone()
+        assert result == expected
+
+
+def test_utcnow_should_return_utcnow(env, cfg):
+    expected = pn.now(tz="UTC")
+    with patch("pendulum.now", return_value=expected) as patched:
+        result = cfg.utcnow()
+        assert result == expected
+        patched.assert_called_once_with(tz="UTC")
+
+
+def test_now_should_return_now_with_local_timezone(env, cfg):
+    expected = pn.now()
+    with patch("pendulum.now", return_value=expected) as patched:
+        result = cfg.now()
+        assert result == expected
+        patched.assert_called_once_with(tz=pn.local_timezone().name)
