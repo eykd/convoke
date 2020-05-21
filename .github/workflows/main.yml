@@ -26,4 +26,4 @@ jobs:
         run: pip install -r requirements-test.txt
 
       - name: Test with pytest
-        run: pytest --flake8 --cov=src --cov-branch $@
+        run: ./runtests.sh
