@@ -1,6 +1,8 @@
+import importlib
 import os
 import pathlib
 import sys
+from collections.abc import Iterable
 
 from path import Path
 
@@ -120,17 +122,59 @@ class Settings:
                 return self.apply_cast(default, cast)
             raise
 
+    def get_list(self, name, default=UNDEFINED, cast=_identity):
+        try:
+            values = self[name]
+        except KeyError:
+            if default is UNDEFINED:
+                raise
+            else:
+                values = default
+        if values is None:
+            values = []
+        if not isinstance(values, Iterable):
+            raise TypeError(f'Unknown type {type(values)} for "{name}"')
+        if isinstance(values, str):
+            values = (s.strip() for s in values.split(','))
+
+        return [self.apply_cast(v, cast) for v in values]
+
     def as_bool(self, name, default=UNDEFINED):
         return self.get(name, default=default, cast=bool)
+
+    def as_bool_list(self, name, default=UNDEFINED):
+        return self.get_list(name, default=default, cast=bool)
 
     def as_int(self, name, default=UNDEFINED):
         return self.get(name, default=default, cast=int)
 
+    def as_int_list(self, name, default=UNDEFINED):
+        return self.get_list(name, default=default, cast=int)
+
     def as_float(self, name, default=UNDEFINED):
         return self.get(name, default=default, cast=float)
 
+    def as_float_list(self, name, default=UNDEFINED):
+        return self.get_list(name, default=default, cast=float)
+
     def as_path(self, name, default=UNDEFINED):
         return self.get(name, default=default, cast=Path).expanduser().abspath()
+
+    def as_package_import(self, name, default=UNDEFINED):
+        path = self.get(name, default=default)
+        return importlib.import_module(path)
+
+    def as_package_import_list(self, name, default=UNDEFINED):
+        paths = self.get_list(name, default=default)
+        return [importlib.import_module(path) for path in paths]
+
+    def as_object_import(self, name, default=UNDEFINED):
+        path = self.get(name, default=default)
+        return self.import_object(path)
+
+    def as_object_import_list(self, name, default=UNDEFINED):
+        paths = self.get_list(name, default=default)
+        return [self.import_object(path) for path in paths]
 
     def apply_cast(self, value, cast):
         if cast is bool and isinstance(value, str):
@@ -141,6 +185,14 @@ class Settings:
             else:
                 raise ValueError(value)
         return cast(value)
+
+    def import_object(self, path):
+        try:
+            path, name = path.rsplit('.', 1)
+        except ValueError:
+            raise ValueError(f'{path} is not a dotted path')
+        package = importlib.import_module(path)
+        return getattr(package, name)
 
     def resolve_config(self, config):
         if isinstance(config, (pathlib.Path, Path)):
