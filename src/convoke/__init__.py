@@ -89,7 +89,6 @@ class Settings:
         self.config = {}
 
         self.app_dir = self.as_path('app_dir', get_app_dir(app_name))
-        self.app_dir.makedirs_p()
 
         config = self.config = self.resolve_config(config)
 
