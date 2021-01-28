@@ -225,3 +225,7 @@ def get_settings(app_name, settings_class=Settings, **kwargs):
     global get_settings
     get_settings = lambda _=None, **kw: settings  # noqa: E731
     return settings
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
