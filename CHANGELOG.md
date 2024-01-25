@@ -1,3 +1,9 @@
+## 2.0.1 (2024-01-25)
+
+### Fix
+
+- remove broken copypasta script definition
+
 ## 2.0.0 (2024-01-25)
 
 ### BREAKING CHANGE
