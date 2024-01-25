@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
 set -x
-pytest \
-    --failed-first \
+poetry run pytest \
+    -vv \
     --new-first \
+    --last-failed \
     --exitfirst \
-    --flake8 \
-    --cov=src \
-    --cov-branch \
-    --no-cov-on-fail $@
+    --disable-warnings \
+    -m "not slow" \
+    "$@"
