@@ -139,4 +139,3 @@ tag_format = "$version"
 version_scheme = "semver"
 version_provider = "poetry"
 update_changelog_on_bump = true
-changelog_start_rev = "fc359cd745a2d0bf221bf94222e2d7dc81805f44"
