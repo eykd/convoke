@@ -1,6 +1,6 @@
 [build-system]
-requires = ["poetry-core", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = 'convoke'
@@ -15,22 +15,6 @@ packages = [
 ]
 license = "MIT"
 readme = "README.md"
-
-[tool.poetry-dynamic-versioning]
-enable = false
-metadata = true
-dirty = true
-vcs = 'git'
-style = 'pep440'
-bump = true
-
-[tool.poetry-dynamic-versioning.substitution]
-folders = [
-  { path = "src" }
-]
-
-[tool.poetry-dynamic-versioning.files."tb/__init__.py"]
-persistent-substitution = true
 
 [tool.poetry.dependencies]
 python = "^3.11"
