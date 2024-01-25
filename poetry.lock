@@ -1006,22 +1006,6 @@ python-dateutil = ">=2.8.1"
 dev = ["flake8", "markdown", "twine", "wheel"]
 
 [[package]]
-name = "gitchangelog"
-version = "3.0.4"
-description = "gitchangelog generates a changelog thanks to git log."
-optional = false
-python-versions = "*"
-files = [
-    {file = "gitchangelog-3.0.4-py2.py3-none-any.whl", hash = "sha256:45f8b8e64cece0d9bb03a35ecd8ee62c1c7157f8dac0ef3cb68381bfcc1bde29"},
-    {file = "gitchangelog-3.0.4.tar.gz", hash = "sha256:3d8d6a730450fbd5b0a9bc58d0dd3e269c967d7eb4fece0c5cff4372a3f77421"},
-]
-
-[package.extras]
-mako = ["mako"]
-mustache = ["pystache"]
-test = ["mako", "minimock", "nose", "pystache"]
-
-[[package]]
 name = "gprof2dot"
 version = "2022.7.29"
 description = "Generate a dot graph from the output of several profilers."
@@ -3469,4 +3453,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f4400e110ed24d68adb7d0b4807697f1b500952460a76adef44d40a1d73eda53"
+content-hash = "80c19a8580abccb3899e35c20a16e712b79d800a54b5f112ec0dadeea309c62a"

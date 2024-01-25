@@ -58,7 +58,6 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 black = "^23.12"
 fakemail = "^0.1"
-gitchangelog = "^3.0"
 nest-asyncio = "^1.5"
 pre-commit = "^3.6"
 ipython = "^8.19"
