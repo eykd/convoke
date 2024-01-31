@@ -516,7 +516,7 @@ def generate_dot_env(settings_summary: dict, generate_secrets=True, required_onl
                     out.append(f"# and is already set above in {fn.first(others)}.")
 
             # Get default value to emit:
-            default = meta["default"] if meta["default"] and meta["default"] is not UNDEFINED else ""
+            default = meta["default"] if "default" in meta and meta["default"] is not UNDEFINED else ""
             if not isinstance(default, str) and isinstance(default, Sequence):
                 default = ",".join(default)
             elif generate_secrets and meta["type"] == Secret and "SECRET" in name and default == "":

@@ -867,7 +867,7 @@ class TestGenerateDotEnv:
                 #
                 # Development mode?
 
-                DEBUG=""
+                DEBUG="False"
 
                 # --------------------
                 # -- TESTING (bool) --
@@ -875,7 +875,7 @@ class TestGenerateDotEnv:
                 #
                 # Testing mode?
 
-                TESTING=""
+                TESTING="False"
 
 
                 ###########################
