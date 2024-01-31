@@ -1,6 +1,7 @@
 # Convoke
 
-A decentralized app configuration toolkit that tries to do things right.
+A decentralized async-first app configuration toolkit that tries to do things
+right.
 
     from convoke.configs import BaseConfig, env_field
     from convoke.bases import Base
@@ -216,15 +217,17 @@ the HQ instance for the current thread, if one exists.
 
 ### Signals
 
+Convoke signals are presently async-only.
+
 Unlike most signals frameworks (e.g. `blinker` or `Django`), signals are not
 global. Instead, signals are passed within the network of bases established by
 the HQ:
 
     >>> from foo import FOO
 
-    >>> FOO.send(value='blah', using=hq)
+    >>> await FOO.send(value='blah', using=hq)
 
-    >>> FOO.send(value='blah')  # <-- uses HQ.current_hq
+    >>> await FOO.send(value='blah')  # <-- uses HQ.current_hq
 
 
 Contribute

@@ -1,0 +1,17 @@
+site_name: Convoke
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: true
+            docstring_style: sphinx
+
+
+nav:
+  - Tutorials: tutorials/index.md
+  - API Reference: reference/index.md
