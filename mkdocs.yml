@@ -1,5 +1,16 @@
 site_name: Convoke
 
+
+repo_url: https://github.com/eykd/convoke
+repo_name: eykd/convoke
+
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+
+
 plugins:
   - search
   - autorefs
@@ -10,8 +21,3 @@ plugins:
           options:
             show_source: true
             docstring_style: sphinx
-
-
-nav:
-  - Tutorials: tutorials/index.md
-  - API Reference: reference/index.md

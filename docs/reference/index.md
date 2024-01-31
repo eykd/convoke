@@ -1,4 +1,4 @@
-# API Reference
+# API Reference Index
 
 - [`convoke.configs`](configs.md): application configuration tools
 - [`convoke.bases`](bases.md): decentralized apps
