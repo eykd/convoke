@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Tutorial: Configuring Your Application - Convoke</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Convoke</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../" class="nav-link">Tutorials</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../reference/" class="nav-link">API Reference</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#tutorial-configuring-your-application" class="nav-link">Tutorial: Configuring Your Application</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#built-in-configuration-settings" class="nav-link">Built-in configuration settings</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#custom-configuration-settings" class="nav-link">Custom configuration settings</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#protecting-secrets" class="nav-link">Protecting secrets</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#other-configuration-field-types" class="nav-link">Other configuration field types</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#generating-a-env-file" class="nav-link">Generating a .env file</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#documenting-configuration-values" class="nav-link">Documenting configuration values</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="tutorial-configuring-your-application">Tutorial: Configuring Your Application</h1>
+<p>In this tutorial, we'll see how to use <code>convoke</code> to configure a simple Starlette
+web application.</p>
+<p>We'll start with a very simple Starlette web app:</p>
+<pre><code class="language-python"># app.py
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Route
+
+templates = Jinja2Templates(directory='templates')
+
+
+async def homepage(request):
+    return templates.TemplateResponse(
+        &quot;index.html&quot;,
+        {&quot;request&quot;: request, &quot;DEBUG&quot;: request.app.debug}
+    )
+
+
+def create_app():
+    return Starlette(debug=True, routes=[
+        Route('/', homepage),
+    ])
+</code></pre>
+<h2 id="built-in-configuration-settings">Built-in configuration settings</h2>
+<p>Now, of course, we don't want to always be in debug mode. Let's add a
+configuration by subclassing <code>convoke.configs.BaseConfig</code>:</p>
+<pre><code class="language-python"># app.py
+from starlette.applications import Starlette
+from starlette.responses import JSONResponse
+from starlette.routing import Route
+
+from convoke.configs import BaseConfig, env_field
+
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+
+def create_app():
+    config = WebAppConfig()
+
+    return Starlette(debug=config.DEBUG, routes=[
+        Route('/', homepage),
+    ])
+
+</code></pre>
+<p>Every instance of <code>BaseConfig</code> has two built-in settings: <code>DEBUG</code> and <code>TESTING</code>,
+both booleans with a default value of <code>False</code>. So, if we run our application, it
+will default to production mode:</p>
+<pre><code class="language-shell">$ uvicorn --factory app.create_app
+</code></pre>
+<p>But if we set the environment variable <code>DEBUG=True</code>, it will run in development
+mode:</p>
+<pre><code class="language-shell">$ DEBUG=True uvicorn --factory app.create_app
+</code></pre>
+<p><code>DEBUG=true</code> and <code>DEBUG=TRUE</code> would also work, but <code>tRuE</code> would not. Likewise,
+with equivalent cases of <code>DEBUG=False</code>.</p>
+<h2 id="custom-configuration-settings">Custom configuration settings</h2>
+<p>Now, to improve our application, we'll want our users to be able to login, and
+for that, we'll need sessions:</p>
+<pre><code class="language-python"># app.py
+from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.sessions import SessionMiddleware
+# ...
+
+def create_app():
+    config = WebAppConfig()
+
+    return Starlette(
+        debug=config.DEBUG,
+        routes=[
+            Route('/', homepage),
+        ],
+        middleware=[
+            Middleware(
+                SessionMiddleware,
+                secret_key=&quot;supers3kr1t&quot;,
+                https_only=not config.DEBUG)
+        ],
+    )
+</code></pre>
+<p>We see how the configuration is already making our lives easier: in production
+we want secure sessions, which requires HTTPS, but in development we don't want
+to bother with HTTPS, so we use <code>https_only=not config.DEBUG</code> to only require
+HTTPS in production.</p>
+<h2 id="protecting-secrets">Protecting secrets</h2>
+<p>However, we have another problem: our secret key is stored in plain text in our
+Python source. Anyone who can read this file can discover our secret and hack
+our users! What to do?</p>
+<p>Let's move our secret key to the environment:</p>
+<pre><code class="language-python"># app.py
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+    SECRET_KEY: str = env_field()
+
+
+def create_app():
+    config = WebAppConfig()
+
+    return Starlette(
+        # ...
+        middleware=[
+            Middleware(
+                SessionMiddleware,
+                secret_key=config.SECRET_KEY,
+                https_only=not config.DEBUG)
+        ],
+    )
+
+</code></pre>
+<p>We use all caps <code>SECRET_KEY</code> by convention, and the corresponding environment
+variable:</p>
+<pre><code class="language-shell">$ DEBUG=True SECRET_KEY=&quot;supers3kr1t&quot;  uvicorn --factory app.create_app
+</code></pre>
+<p>Now, one problem is that if we ever print our configuration to the console, we
+get our secret in plain text again:</p>
+<pre><code class="language-python">$ DEBUG=True SECRET_KEY=&quot;supers3kr1t&quot;  python
+&gt;&gt;&gt; from app import WebAppConfig
+
+&gt;&gt;&gt; print(WebAppConfig())
+WebAppConfig(DEBUG=True, TESTING=False, SECRET_KEY='supers3kr1t')
+</code></pre>
+<p>Let's fix that by using the <code>Secret</code> type:</p>
+<pre><code class="language-python"># app.py
+# ...
+from convoke.configs import BaseConfig, env_field, Secret
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+    SECRET_KEY: Secret = env_field()
+
+</code></pre>
+<p>Now, when we print to the console, our secret is safe:</p>
+<pre><code class="language-python">$ DEBUG=True SECRET_KEY=&quot;supers3kr1t&quot;  python
+&gt;&gt;&gt; from app import WebAppConfig
+
+&gt;&gt;&gt; print(WebAppConfig())
+WebAppConfig(DEBUG=True, TESTING=False, SECRET_KEY=Secret('**********'))
+</code></pre>
+<p>But when we use the secret as a string, we get the plain-text value:</p>
+<pre><code class="language-python">&gt;&gt;&gt; str(WebAppConfig().SECRET_KEY)
+'supers3kr1t'
+</code></pre>
+<h2 id="other-configuration-field-types">Other configuration field types</h2>
+<p>Since we're considering security, let's consider our session age. Starlette's
+default session age is 2 weeks (1,209,600 seconds), but say that for our
+application, we require that a user session must be refreshed by authentication
+every 24 hours (86,400 seconds). As a business policy, this may change in the
+future, so let's make it a configurable value:</p>
+<pre><code class="language-python"># app.py
+# ...
+from convoke.configs import BaseConfig, env_field, Secret
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+    SECRET_KEY: Secret = env_field()
+    SESSION_COOKIE_MAX_AGE: int = env_field(default=86_400)
+
+
+def create_app():
+    config = WebAppConfig()
+
+    return Starlette(
+        # ...
+        middleware=[
+            Middleware(
+                SessionMiddleware,
+                secret_key=config.SECRET_KEY,
+                https_only=not config.DEBUG,
+                max_age=config.SESSION_COOKIE_MAX_AGE,
+            ),
+        ],
+    )
+
+</code></pre>
+<p>By annotating the type of the configuration field, we tell <code>convoke</code> how to
+parse the environment string. This works for floats and booleans too:</p>
+<pre><code class="language-python">class MyConfig(BaseConfig):
+    VALUE_OF_PI: float = env_field(default=3.14)
+    USE_ANTIGRAVITY: bool = env_field(default=False)
+</code></pre>
+<h3 id="configuration-fields-with-multiple-values">Configuration fields with multiple values</h3>
+<p>Now, to really make sure our application is secure, let's configure Starlette's
+<code>TrustedHostMiddleware</code>:</p>
+<pre><code class="language-python"># app.py
+# ...
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+    SECRET_KEY: Secret = env_field()
+    SESSION_COOKIE_MAX_AGE: int = env_field(default=86_400)
+    ALLOWED_HOSTS: tuple[str] = env_field(default=('127.0.0.1', 'localhost'))
+
+
+def create_app():
+    config = WebAppConfig()
+
+    return Starlette(
+        # ...
+        middleware=[
+            # ...
+            Middleware(
+                TrustedHostMiddleware,
+                allowed_hosts=config.ALLOWED_HOSTS,
+            ),
+        ],
+    )
+</code></pre>
+<p>By using the type annotation <code>tuple[str]</code>, we tell <code>convoke</code> to parse the value
+as a comma-separated list of strings, resulting in a tuple of strings:</p>
+<pre><code class="language-shell">$ DEBUG=True SECRET_KEY=&quot;supers3kr1t&quot; ALLOWED_HOSTS=&quot;example.com,*.example.com&quot;  uvicorn --factory app.create_app
+</code></pre>
+<p>We could also use <code>tuple[int]</code> for a setting that uses a sequence of integers, etc.</p>
+<h3 id="prefer-immutability">Prefer immutability</h3>
+<p>For that matter, we could also use <code>ALLOWED_HOSTS: list[str]</code> give us a list of
+strings instead of a tuple, but Config instances are immutable, and it's best to
+use immutable types for configuration values as well.</p>
+<h2 id="generating-a-env-file">Generating a .env file</h2>
+<p>As we've added more configuration values, our <code>uvicorn</code> invocation has been
+getting longer and longer. Web applications can have tens if not hundreds of
+configuration values, and we don't want to type these out every time we start up
+the dev server! Let's fix that:</p>
+<pre><code class="language-python"># app.py
+# ...
+from convoke.configs import BaseConfig, env_field, generate_dot_env, Secret
+# ...
+
+if __name__ == &quot;__main__&quot;:
+    print(generate_dot_env(BaseConfig.gather_settings()))
+</code></pre>
+<p>Then, in the shell:</p>
+<pre><code>$ python app.py &gt; .env
+$ cat .env
+################################
+## convoke.configs.BaseConfig ##
+################################
+##
+## Base settings common to all configurations
+
+# ------------------
+# -- DEBUG (bool) --
+# ------------------
+#
+# Development mode?
+
+DEBUG=&quot;False&quot;
+
+# --------------------
+# -- TESTING (bool) --
+# --------------------
+#
+# Testing mode?
+
+TESTING=&quot;False&quot;
+
+
+###########################
+## __main__.WebAppConfig ##
+###########################
+##
+## Configuration for our web application.
+
+# ---------------------------------------
+# -- SECRET_KEY (Secret) **Required!** --
+# ---------------------------------------
+
+SECRET_KEY=&quot;6BIW_mb496YHiptQ1E4WVm-7b_YBW1zQFqZnBKmcsDpTlb1Qb8uZ8w&quot;
+
+# ---------------------------
+# -- SESSION_COOKIE_MAX_AGE (int) --
+# ---------------------------
+
+SESSION_COOKIE_MAX_AGE=&quot;86400&quot;
+
+# ---------------------------
+# -- ALLOWED_HOSTS (tuple) --
+# ---------------------------
+
+ALLOWED_HOSTS=&quot;127.0.0.1,localhost&quot;
+</code></pre>
+<p>A few things to note here:</p>
+<ul>
+<li>Default values are included</li>
+<li>Secrets are assigned a securely-generated value</li>
+<li>Configuration values have documentation!</li>
+</ul>
+<h2 id="documenting-configuration-values">Documenting configuration values</h2>
+<p>Let's add some documentation to our config values:</p>
+<pre><code class="language-python"># app.py
+# ...
+
+class WebAppConfig(BaseConfig):
+    &quot;&quot;&quot;Configuration for our web application.&quot;&quot;&quot;
+
+    SECRET_KEY: Secret = env_field(
+        doc=&quot;&quot;&quot;
+            Secret used to cryptographically sign session cookies.
+
+            This should be set to a unique, unpredictable value and kept safe
+            from prying eyes.
+        &quot;&quot;&quot;,
+    )
+    SESSION_COOKIE_MAX_AGE: int = env_field(
+        default=86_400,
+        doc=&quot;&quot;&quot;
+            The maximum age of session cookies, in seconds.
+
+            Defaults to 24 hours.
+        &quot;&quot;&quot;,
+    )
+    ALLOWED_HOSTS: tuple[str] = env_field(
+        default=('127.0.0.1', 'localhost'),
+        doc=&quot;&quot;&quot;
+            A list of strings representing the host/domain names that this site can serve.
+        &quot;&quot;&quot;
+    )
+</code></pre>
+<p>And now, if we generate a <code>.env</code> file again, we see our new documentation:</p>
+<pre><code>$ python app.py
+# ...
+###########################
+## __main__.WebAppConfig ##
+###########################
+##
+## Configuration for our web application.
+
+# ---------------------------------------
+# -- SECRET_KEY (Secret) **Required!** --
+# ---------------------------------------
+#
+# Secret used to cryptographically sign session cookies.
+#
+# This should be set to a unique, unpredictable value and kept safe from
+# prying eyes.
+
+SECRET_KEY=&quot;6rlnXtlxeggkgaG1Y4EsEitfRTGjUxu8zbdtZ8GpwfbwCmi0J2Tb3w&quot;
+
+# ----------------------------------
+# -- SESSION_COOKIE_MAX_AGE (int) --
+# ----------------------------------
+#
+# The maximum age of session cookies, in seconds.
+#
+# Defaults to 24 hours.
+
+SESSION_COOKIE_MAX_AGE=&quot;86400&quot;
+
+# ---------------------------
+# -- ALLOWED_HOSTS (tuple) --
+# ---------------------------
+#
+# A list of strings representing the host/domain names that this site can serve.
+
+ALLOWED_HOSTS=&quot;127.0.0.1,localhost&quot;
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>With that, you should now understand the basics of configuring a Starlette
+application with <code>convoke</code>, including how to keep secrets safe, and how to
+document your settings.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
