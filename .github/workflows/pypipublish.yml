@@ -32,3 +32,17 @@ jobs:
           PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           poetry publish --build -u $PYPI_USERNAME -p $PYPI_PASSWORD
+  docs:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - run: |
+          poetry install --with=dev
+      - run: |
+          poetry run mkdocs gh-deploy --force
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
