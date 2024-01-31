@@ -25,7 +25,7 @@ class ABCPluginMount(ABCMeta):
 
     Notably, the registry uses weak references to allow for ephemeral plugins.
 
-    This simple plugin framework is convoke on a simple proposal by Marty Alchin:
+    This simple plugin framework is based on a simple proposal by Marty Alchin:
 
     https://web.archive.org/web/20220506163033/http://martyalchin.com/2008/jan/10/simple-plugin-framework/
 

@@ -40,7 +40,7 @@ PATH = Path(__file__).absolute().parent
 class HQ:
     """The HQ is the special root Base.
 
-    The HQ is directly instantiated by client code, rather than
+    The HQ is directly instantiated by a client code entrypoint, rather than
     discovered by the dependency loader.
 
         hq = HQ(config=MyConfig(), dependencies=['foo'])

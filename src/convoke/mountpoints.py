@@ -9,7 +9,7 @@ from typing import ClassVar, Type
 class Mountpoint:
     """A Mountpoint, subclassed, provides a place to register objects for a particular use.
 
-    See `tb.templates.ContextProcessor`` for an example of use.
+    This registration collaborates with [`Base`][convoke.bases.Base].
     """
 
     mounted: list = field(default_factory=list)
@@ -24,7 +24,7 @@ class Mountpoint:
     def register(cls, func):
         """Register the given function for use with the mountpoint.
 
-        This registration collaborates with `convoke.bases.Base._register_special_methods()`.
+        This registration collaborates with [`Base`][convoke.bases.Base].
         """
         mp = getattr(func, "__mountpoints__", [])
         mp.append(cls)

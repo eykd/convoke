@@ -23,7 +23,7 @@ FALSE_VALUES = {"n", "no", "f", "false", "off", "0"}
 
 
 class Secret(str):
-    """Holds a string value that should not be revealed in tracebacks, etc."""
+    """A string value that should not be revealed in logs, tracebacks, etc."""
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__
@@ -195,6 +195,10 @@ def env_field(
     """Define a field that pulls config values from the environment.
 
     Fields with missing defaults will be assumed to be required, and if missing will produce an error.
+
+    :param Any default: the default value to use, if any, of the expected type. If this is omitted, the field will be required.
+    :param str doc: a docstring describing the use of the configuration value, used in generating .env files
+
     """
     return ConfigField(default, init, repr, hash, compare, metadata, kw_only, doc)
 
@@ -302,9 +306,9 @@ class BaseConfig(metaclass=BaseConfigMeta):
     def get(self, name: str, default: Any = UNDEFINED, caster: Union[Type, TUndefined] = UNDEFINED) -> Any:
         """Return the named configuration environment value, optionally casting it as specified.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already the expected type.
-        :param caster Type: A type to cast the string value to, if any.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already the expected type.
+        :param Type caster: A type to cast the string value to, if any.
         """
         if caster is UNDEFINED:
             caster = identity
@@ -332,97 +336,97 @@ class BaseConfig(metaclass=BaseConfigMeta):
     ) -> tuple[Any]:
         """Return the named configuration environment value as a sequence, optionally casting internal values as specified.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already the expected type.
-        :param caster Type: A type to cast the internal string values to, if any.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already the expected type.
+        :param Type caster: A type to cast the internal string values to, if any.
         """
         return self.get(name, default=default, caster=caster)
 
     def as_secret(self, name: str, default: Secret = UNDEFINED) -> Secret:
         """Return the named configuration environment value as a Secret string.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a Secret.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a Secret.
         """
         return self.get(name, default=default, caster=Secret)
 
     def as_secret_tuple(self, name: str, default: Union[tuple[Secret], TUndefined] = UNDEFINED) -> tuple[Secret]:
         """Return the named configuration environment value as a sequence of Secret strings.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of Secrets.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of Secrets.
         """
         return self.get_tuple(name, default=default, caster=tuple[Secret])
 
     def as_bool(self, name: str, default: Union[bool, TUndefined] = UNDEFINED) -> bool:
         """Return the named configuration environment value as a boolean value.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a boolean.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a boolean.
         """
         return self.get(name, default=default, caster=bool)
 
     def as_bool_tuple(self, name: str, default: Union[tuple[bool], TUndefined] = UNDEFINED) -> tuple[bool]:
         """Return the named configuration environment value as a tuple of boolean values.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of booleans.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of booleans.
         """
         return self.get_tuple(name, default=default, caster=tuple[bool])
 
     def as_int(self, name: str, default: Union[int, TUndefined] = UNDEFINED) -> int:
         """Return the named configuration environment value as an int.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already an int.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already an int.
         """
         return self.get(name, default=default, caster=int)
 
     def as_int_tuple(self, name: str, default: Union[tuple[int], TUndefined] = UNDEFINED) -> tuple[int]:
         """Return the named configuration environment value as a tuple of ints.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of ints.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of ints.
         """
         return self.get_tuple(name, default=default, caster=tuple[int])
 
     def as_float(self, name: str, default: Union[float, TUndefined] = UNDEFINED) -> float:
         """Return the named configuration environment value as a float.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a float.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a float.
         """
         return self.get(name, default=default, caster=float)
 
     def as_float_tuple(self, name: str, default: Union[tuple[float], TUndefined] = UNDEFINED) -> tuple[float]:
         """Return the named configuration environment value as a tuple of floats.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of floats.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of floats.
         """
         return self.get_tuple(name, default=default, caster=tuple[float])
 
     def as_path(self, name: str, default: Union[Path, TUndefined] = UNDEFINED) -> Path:
         """Return the named configuration environment value as a Path.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a Path.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a Path.
         """
         return self.get(name, default=default, caster=Path)
 
     def as_path_tuple(self, name: str, default: Union[tuple[float], TUndefined] = UNDEFINED) -> tuple[Path]:
         """Return the named configuration environment value as a tuple of Paths.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of Paths.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of Paths.
         """
         return self.get(name, default=default, caster=tuple[Path])
 
     def as_package_import(self, name: str, default: Union[Any, TUndefined] = UNDEFINED) -> Any:
         """Return the named configuration environment value as an imported module.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a module.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a module.
         """
         path = self.get(name, default=default)
         return importlib.import_module(path)
@@ -430,8 +434,8 @@ class BaseConfig(metaclass=BaseConfigMeta):
     def as_package_import_tuple(self, name: str, default: Union[tuple[Any], TUndefined] = UNDEFINED) -> tuple[Any]:
         """Return the named configuration environment value as a tuple of imported modules.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of modules.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of modules.
         """
         paths = self.get_tuple(name, default=default)
         return tuple(importlib.import_module(path) for path in paths)
@@ -439,8 +443,8 @@ class BaseConfig(metaclass=BaseConfigMeta):
     def as_object_import(self, name: str, default: Union[Any, TUndefined] = UNDEFINED) -> Any:
         """Return the named configuration environment value as an imported object.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already an object.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already an object.
         """
         path = self.get(name, default=default)
         return import_object(path)
@@ -448,8 +452,8 @@ class BaseConfig(metaclass=BaseConfigMeta):
     def as_object_import_tuple(self, name: str, default: Union[tuple[Any], TUndefined] = UNDEFINED):
         """Return the named configuration environment value as a tuple of imported objects.
 
-        :param name str: The name of the configuration value, as defined on this object or in the environment.
-        :param default Any: A default value, already a tuple of objects.
+        :param str name: The name of the configuration value, as defined on this object or in the environment.
+        :param Any default: A default value, already a tuple of objects.
         """
         paths = self.get_tuple(name, default=default)
         return tuple(import_object(path) for path in paths)
