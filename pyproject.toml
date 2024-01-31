@@ -4,17 +4,28 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = 'convoke'
-description = ''
+description = 'A Python app configuration toolkit that tries to do things right.'
 version = "2.0.1"
 authors = [
   "David Eyk <david@worldsenoughstudios.com>"
 ]
 homepage = "https://github.com/eykd/convoke/"
+repository = "https://github.com/eykd/convoke"
+
 packages = [
     { include = "convoke", from = "src" },
 ]
-license = "MIT"
+license = "BSD"
 readme = "README.md"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Environment :: Plugins",
+    "License :: OSI Approved :: BSD License",
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
