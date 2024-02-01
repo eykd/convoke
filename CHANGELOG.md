@@ -1,3 +1,9 @@
+## 2.2.4 (2024-02-01)
+
+### Fix
+
+- configure git for docs push in publish action
+
 ## 2.2.3 (2024-02-01)
 
 ### Fix
