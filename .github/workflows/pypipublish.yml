@@ -44,6 +44,6 @@ jobs:
           poetry install --with=dev
       - run: |
           poetry run mike set-default latest
-          poetry run mike deploy $(poetry version --short|cut -d. -f-2) latest
-        with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          poetry run mike deploy --push --update-aliases $(poetry version --short|cut -d. -f-2) latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
