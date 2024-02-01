@@ -1,3 +1,9 @@
+## 2.2.7 (2024-02-01)
+
+### Fix
+
+- pull before trying to push docs branch
+
 ## 2.2.6 (2024-02-01)
 
 ### Fix
