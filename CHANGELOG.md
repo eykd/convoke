@@ -1,3 +1,9 @@
+## 2.2.8 (2024-02-01)
+
+### Fix
+
+- fix git invocation in docs deploy action
+
 ## 2.2.7 (2024-02-01)
 
 ### Fix

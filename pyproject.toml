@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = 'convoke'
 description = 'A Python app configuration toolkit that tries to do things right.'
-version = "2.2.7"
+version = "2.2.8"
 authors = [
   "David Eyk <david@worldsenoughstudios.com>"
 ]
