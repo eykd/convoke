@@ -1,3 +1,9 @@
+## 2.2.2 (2024-02-01)
+
+### Fix
+
+- install Poetry first when publishing docs
+
 ## 2.2.1 (2024-02-01)
 
 ### Fix
