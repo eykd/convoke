@@ -11,7 +11,7 @@ authors = [
 ]
 homepage = "https://github.com/eykd/convoke/"
 repository = "https://github.com/eykd/convoke"
-documentation = "https://github.com/eykd/convoke"
+documentation = "https://eykd.github.io/convoke/latest/"
 
 
 packages = [
