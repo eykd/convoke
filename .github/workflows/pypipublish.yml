@@ -51,14 +51,13 @@ jobs:
       - run: |
           # From https://github.com/mhausenblas/mkdocs-deploy-gh-pages/blob/e55ecab6718b449a90ebd4313f1320f9327f1386/action.sh#L35C1-L59C1
           if [ -n "${GITHUB_TOKEN}" ]; then
-              print_info "setup with GITHUB_TOKEN"
-              remote_repo="https://x-access-token:${GITHUB_TOKEN}@${GITHUB_DOMAIN:-"github.com"}/${GITHUB_REPOSITORY}.git"
+              echo "setup with GITHUB_TOKEN"
+              remote_repo="https://x-access-token:${GITHUB_TOKEN}@$github.com/eykd/convoke.git"
           elif [ -n "${PERSONAL_TOKEN}" ]; then
-              print_info "setup with PERSONAL_TOKEN"
-              remote_repo="https://x-access-token:${PERSONAL_TOKEN}@${GITHUB_DOMAIN:-"github.com"}/${GITHUB_REPOSITORY}.git"
+              echo "setup with PERSONAL_TOKEN"
+              remote_repo="https://x-access-token:${PERSONAL_TOKEN}@$$github.com/eykd/convoke.git"
           else
-              print_info "no token found; linting"
-              exec -- mkdocs build --config-file "${CONFIG_FILE}"
+              echo "no token found; linting"
           fi
 
           # workaround, see https://github.com/actions/checkout/issues/766
