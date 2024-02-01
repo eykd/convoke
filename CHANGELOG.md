@@ -1,3 +1,9 @@
+## 2.2.6 (2024-02-01)
+
+### Fix
+
+- fix shell script errors in docs publish action
+
 ## 2.2.5 (2024-02-01)
 
 ### Fix
