@@ -52,10 +52,10 @@ jobs:
           # From https://github.com/mhausenblas/mkdocs-deploy-gh-pages/blob/e55ecab6718b449a90ebd4313f1320f9327f1386/action.sh#L35C1-L59C1
           if [ -n "${GITHUB_TOKEN}" ]; then
               echo "setup with GITHUB_TOKEN"
-              remote_repo="https://x-access-token:${GITHUB_TOKEN}@$github.com/eykd/convoke.git"
+              remote_repo="https://x-access-token:${GITHUB_TOKEN}@github.com/eykd/convoke.git"
           elif [ -n "${PERSONAL_TOKEN}" ]; then
               echo "setup with PERSONAL_TOKEN"
-              remote_repo="https://x-access-token:${PERSONAL_TOKEN}@$$github.com/eykd/convoke.git"
+              remote_repo="https://x-access-token:${PERSONAL_TOKEN}@github.com/eykd/convoke.git"
           else
               echo "no token found; linting"
           fi
@@ -68,7 +68,7 @@ jobs:
           fi
 
           if ! git config --get user.email; then
-              git config --global user.email "${GITHUB_ACTOR}@users.noreply.${GITHUB_DOMAIN:-"github.com"}"
+              git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           fi
 
           git remote rm origin
