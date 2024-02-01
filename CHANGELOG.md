@@ -1,3 +1,9 @@
+## 2.2.3 (2024-02-01)
+
+### Fix
+
+- don't try and set a default alias when it's already set up
+
 ## 2.2.2 (2024-02-01)
 
 ### Fix
