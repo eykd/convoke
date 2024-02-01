@@ -73,7 +73,7 @@ jobs:
 
           git remote rm origin
           git remote add origin "${remote_repo}"
-          git pull
+          git fetch origin
           poetry run mike deploy --push --update-aliases $(poetry version --short|cut -d. -f-2) latest
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
