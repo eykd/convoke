@@ -1,3 +1,9 @@
+## 2.2.5 (2024-02-01)
+
+### Fix
+
+- fix, simplify docs publish script
+
 ## 2.2.4 (2024-02-01)
 
 ### Fix
