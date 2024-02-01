@@ -43,6 +43,7 @@ jobs:
       - run: |
           poetry install --with=dev
       - run: |
-          poetry run mkdocs gh-deploy --force
+          poetry run mike set-default latest
+          poetry run mike deploy $(poetry version --short|cut -d. -f-2) latest
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

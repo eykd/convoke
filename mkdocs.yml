@@ -11,6 +11,11 @@ theme:
     scheme: slate
 
 
+extra:
+  version:
+    provider: mike
+
+
 plugins:
   - search
   - autorefs
@@ -21,3 +26,4 @@ plugins:
           options:
             show_source: true
             docstring_style: sphinx
+  - mike
