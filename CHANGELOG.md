@@ -1,3 +1,9 @@
+## 2.2.1 (2024-02-01)
+
+### Fix
+
+- fix Github docs deploy action syntax
+
 ## 2.2.0 (2024-02-01)
 
 ### Feat
