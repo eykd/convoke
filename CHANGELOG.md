@@ -1,3 +1,17 @@
+## 2.2.0 (2024-02-01)
+
+### Feat
+
+- use mike to manage multiple versions of docs
+- use mkdocs-material theme
+- auto-publish docs
+- add mkdocs documentation with configs tutorial, API reference
+
+### Fix
+
+- fix typos in docstrings; prepare for mkdocs
+- emit a valid string for falsey values when generating .env
+
 ## 2.1.0 (2024-01-31)
 
 ### Feat
